@@ -4,7 +4,7 @@ General solving methods
 3. Prefix-Sum
 4. Kadane
 
-sum,avg,len--> 1,2,3
+sum,avg,len--> 2,3,4
 only leftmost,rightmost and not anything in between needed--> 1 (eg- trapping rainwater)
 
 
