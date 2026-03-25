@@ -1,0 +1,44 @@
+https://leetcode.com/problems/circular-array-loop/description/
+
+class Solution {
+public:
+    int nextValidIndex(int ind,bool cur_dir,vector<int>&nums){
+        int n=nums.size();
+        int next_ind = ((ind + nums[ind]) % n + n) % n;
+
+        if(ind==next_ind)return -1;
+        bool next_dir;
+        if(nums[next_ind]>0){
+            next_dir=true;
+        }else{
+            next_dir=false;
+        }
+        if(cur_dir!=next_dir)return -1;
+
+        return next_ind;
+    }
+    bool circularArrayLoop(vector<int>& nums) {
+        int n=nums.size();
+        for(int i=0;i<n;i++){
+            int sp=i,fp=i;
+            bool cur_dir;
+            if(nums[i]>0){
+                cur_dir=true;
+            }else{
+                cur_dir=false;
+            }
+            while(true){
+                sp=nextValidIndex(sp,cur_dir,nums);
+                fp=nextValidIndex(fp,cur_dir,nums);
+
+                if(sp==-1 || fp==-1)break;
+
+                fp=nextValidIndex(fp,cur_dir,nums);
+                if(fp==-1)break;
+
+                if(fp==sp)return true;
+            }
+        }
+        return false;
+    }
+};
