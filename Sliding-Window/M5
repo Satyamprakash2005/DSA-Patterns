@@ -1,0 +1,21 @@
+https://leetcode.com/problems/longest-repeating-character-replacement/description/
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int l=0,maxfreq=0,maxlen=0;
+        vector<int>hsh(26);
+        int n=s.size();
+        for(int r=0;r<n;r++){
+            hsh[s[r]-'A']++;
+            maxfreq=max(maxfreq,hsh[s[r]-'A']);
+            int len=r-l+1;
+            if(len-maxfreq>k){
+                hsh[s[l]-'A']--;
+                l++;
+            }
+            maxlen=max(maxlen,r-l+1);
+        }
+        return maxlen;
+    }
+};
