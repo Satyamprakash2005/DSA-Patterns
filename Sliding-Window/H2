@@ -1,0 +1,41 @@
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/solutions/2417602/c-easy-solution-using-hashmap-by-conquis-3tlp/
+
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        unordered_map<string, int> counts;       
+        for (auto &word : words) {
+            counts[word]++;
+        }
+        vector<int> indexes;
+        int n = s.length();
+        int num = words.size();
+        int len = words[0].length();
+
+        for (int i = 0; i <= n - num * len; i++) {
+            unordered_map<string, int> seen;
+            int j = 0;
+
+            while (j < num) {
+                string word = s.substr(i + j * len, len);
+
+                if (counts.find(word) != counts.end()) {
+                    seen[word]++;
+                    
+                    if (seen[word] > counts[word]) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+                j++;
+            }
+
+            if (j == num) {
+                indexes.push_back(i);
+            }
+        }
+
+        return indexes;
+    }
+};
