@@ -1,0 +1,29 @@
+https://leetcode.com/problems/find-pivot-index/description/
+
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        int n = nums.size();
+        int totSum = 0, leftSum = 0, rightSum = 0;
+
+        // calculate total sum
+        for (int i = 0; i < n; i++) {
+            totSum += nums[i];
+        }
+
+        // check pivot at index 0
+        if (totSum - nums[0] == 0) return 0;
+
+        // traverse from index 1
+        for (int i = 1; i < n; i++) {
+            leftSum += nums[i - 1];
+            rightSum = totSum - leftSum - nums[i];
+            if (leftSum == rightSum) return i;
+        }
+
+        return -1;
+    }
+};
