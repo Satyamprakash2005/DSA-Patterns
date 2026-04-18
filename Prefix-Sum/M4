@@ -1,0 +1,26 @@
+https://leetcode.com/problems/binary-subarrays-with-sum/
+
+class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        return lessthaneq(nums, goal) - lessthaneq(nums, goal - 1);
+    }
+    int lessthaneq(vector<int>& nums, int k) {
+        if(k<0)return 0;
+        int n = nums.size();
+        int ans = 0, sum = 0;
+        int l = 0;
+
+        for(int r = 0; r < n; r++) {
+            sum += nums[r] ;
+            
+            while(sum > k) {
+                sum -= nums[l] ;
+                l++;
+            }
+            ans += (r - l + 1);
+        }
+
+        return ans;
+    }
+};
