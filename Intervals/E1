@@ -1,0 +1,38 @@
+https://leetcode.com/problems/summary-ranges/description/
+
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> ans;
+        int n = nums.size();
+        if (n == 0) return ans;
+
+        int i = 0;          
+        int count = 0;      
+        string res;
+
+        for (int j = 1; j < n; j++) {
+            if (nums[j] == nums[j - 1] + 1) {
+                count++;
+            } else {
+                if (count == 0) {
+                    ans.push_back(to_string(nums[i]));
+                } else {
+                    res = to_string(nums[i]) + "->" + to_string(nums[j - 1]);
+                    ans.push_back(res);
+                }
+                count = 0;
+                i = j;
+            }
+        }
+
+        if (count == 0) {
+            ans.push_back(to_string(nums[i]));
+        } else {
+            res = to_string(nums[i]) + "->" + to_string(nums[n - 1]);
+            ans.push_back(res);
+        }
+
+        return ans;
+    }
+};
