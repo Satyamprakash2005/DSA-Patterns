@@ -1,0 +1,42 @@
+https://leetcode.com/problems/balanced-binary-tree/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+// TC IS O(N^2) AND SC IS O(N)
+    int checkHeight(TreeNode* root){
+        if(root==NULL){
+            return 0;
+        }
+        int lb=checkHeight(root->left);
+        int rb=checkHeight(root->right);
+
+        return 1+max(lb,rb);
+    }
+
+    bool isBalanced(TreeNode* root) {
+        if(root==NULL)return -1;
+
+        int lh=checkHeight(root->left);
+        int rb=checkHeight(root->right);
+
+        if(abs(lh-rb)>1)return false;
+
+        bool left=isBalanced(root->left);
+        bool right=isBalanced(root->right);
+
+        if(!left || !right)return false;
+        return true;
+
+    }
+};
