@@ -1,0 +1,39 @@
+https://leetcode.com/problems/course-schedule/description/
+
+class Solution {
+public:
+    unordered_map<int,vector<int>>premap;
+    unordered_set<int>vis;
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        for(int i=0;i<numCourses;i++){
+            premap[i]={};
+        }
+        for(int i=0;i<prerequisites.size();i++){
+            premap[prerequisites[i][0]].push_back(prerequisites[i][1]);
+        }
+        for(int i=0;i<numCourses;i++){
+            if(!dfs(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool dfs(int node){
+        if(vis.count(node)){
+            return false;
+        }
+        if(premap[node].empty()){
+            return true;
+        }
+        vis.insert(node);
+        for(auto pre: premap[node]){
+            if(!dfs(pre)){
+                return false;
+            }
+        }
+        vis.erase(node);
+        premap[node].clear();
+        return true;
+    }
+};
