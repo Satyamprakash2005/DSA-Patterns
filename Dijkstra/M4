@@ -1,0 +1,66 @@
+https://leetcode.com/problems/the-maze-ii/description/
+
+
+class Solution {
+public:
+    int shortestDistance(vector<vector<int>>& maze,
+                         vector<int>& start,
+                         vector<int>& destination) {
+
+        int m = maze.size();
+        int n = maze[0].size();
+
+        vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
+
+        priority_queue<
+            pair<int, pair<int,int>>,
+            vector<pair<int, pair<int,int>>>,
+            greater<pair<int, pair<int,int>>>
+        > pq;
+
+        dist[start[0]][start[1]] = 0;
+        pq.push({0, {start[0], start[1]}});
+
+        vector<pair<int,int>> dirs = {
+            {1,0}, {-1,0}, {0,1}, {0,-1}
+        };
+
+        while (!pq.empty()) {
+            auto [d, pos] = pq.top();
+            pq.pop();
+
+            int x = pos.first;
+            int y = pos.second;
+
+            if (d > dist[x][y]) continue;
+
+            if (x == destination[0] && y == destination[1])
+                return d;
+
+            for (auto &[dx, dy] : dirs) {
+
+                int nx = x;
+                int ny = y;
+                int steps = 0;
+
+                while (nx + dx >= 0 &&
+                       nx + dx < m &&
+                       ny + dy >= 0 &&
+                       ny + dy < n &&
+                       maze[nx + dx][ny + dy] == 0) {
+
+                    nx += dx;
+                    ny += dy;
+                    steps++;
+                }
+
+                if (dist[x][y] + steps < dist[nx][ny]) {
+                    dist[nx][ny] = dist[x][y] + steps;
+                    pq.push({dist[nx][ny], {nx, ny}});
+                }
+            }
+        }
+
+        return -1;
+    }
+};
