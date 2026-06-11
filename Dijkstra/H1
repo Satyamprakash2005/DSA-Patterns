@@ -1,0 +1,49 @@
+https://leetcode.com/problems/minimum-cost-to-reach-destination-in-time/
+
+
+class Solution {
+public:
+    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
+        int n = passingFees.size();
+
+        vector<vector<pair<int,int>>> adj(n);
+        for(auto it : edges){
+            adj[it[0]].push_back({it[1], it[2]});
+            adj[it[1]].push_back({it[0], it[2]}); // graph is undirected
+        }
+
+        queue<pair<int,pair<int,int>>> q;
+        // {time,{node,cost}}
+        q.push({0,{0,passingFees[0]}});
+
+        vector<int> cost(n,1e9);
+        cost[0] = passingFees[0];
+
+        while(!q.empty()){
+            auto it = q.front();
+            q.pop();
+
+            int time = it.first;
+            int node = it.second.first;
+            int costnode = it.second.second;
+
+            if(time > maxTime) continue;
+
+            for(auto it : adj[node]){
+                int adjnode = it.first;
+                int edtime = it.second;
+
+                if(time + edtime <= maxTime &&
+                   costnode + passingFees[adjnode] < cost[adjnode]){
+
+                    cost[adjnode] = costnode + passingFees[adjnode];
+
+                    q.push({time + edtime,
+                            {adjnode, cost[adjnode]}});
+                }
+            }
+        }
+
+        return cost[n-1] == 1e9 ? -1 : cost[n-1];
+    }
+};

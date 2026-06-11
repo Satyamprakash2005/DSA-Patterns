@@ -1,86 +1,62 @@
-https://leetcode.com/problems/minimum-cost-to-reach-destination-in-time/
-
-// class Solution {
-// public:
-//     int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
-//         int n=edges.size();
-//         vector<vector<pair<int,int>>>adj(n);
-//         for(auto it: edges){
-//             adj[it[0]].push_back({it[1],it[2]});
-//         }
-//         queue<pair<int,pair<int,int>>>q;
-//         //{time,{node,fees}}
-//         q.push({0,{0,passingFees[0]}});
-//         vector<int>cost(n,1e9);
-//         cost[0]=passingFees[0];
-//         while(!q.empty()){
-//             auto it=q.front();
-//             q.pop();
-
-//             int time = it.first;
-//             int node = it.second.first;
-//             int costnode = it.second.second;
-
-//             if(time>maxTime)continue;
-
-//             for(auto it: adj[node]){
-//                 int adjnode=it.first;
-//                 int edtime=it.second;
-//                 if(costnode+passingFees[node]<cost[adjnode]){
-//                     cost[adjnode]=costnode+passingFees[node];
-//                     q.push({time+edtime,{adjnode,costnode+passingFees[node]}});
-//                 }
-//             }
-//         }
-//         if(cost[n-1] == 1e9) return -1;
-//         return cost[n-1];
-//     }
-// };
-
+https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/description/
 
 class Solution {
 public:
-    int minCost(int maxTime, vector<vector<int>>& edges, vector<int>& passingFees) {
-        int n = passingFees.size();
+    vector<pair<int, int>> adj[105];
+    vector<pair<int, int>> ans;
 
-        vector<vector<pair<int,int>>> adj(n);
-        for(auto it : edges){
-            adj[it[0]].push_back({it[1], it[2]});
-            adj[it[1]].push_back({it[0], it[2]}); // graph is undirected
-        }
+    bool static cmp(const pair<int, int> p1, const pair<int, int> p2) {
+        if (p1.first != p2.first)
+            return p1.first < p2.first;
 
-        queue<pair<int,pair<int,int>>> q;
-        // {time,{node,cost}}
-        q.push({0,{0,passingFees[0]}});
+        return p1.second > p2.second;
+    }
 
-        vector<int> cost(n,1e9);
-        cost[0] = passingFees[0];
+    void dijkstra(int src, int n, int distanceThreshold) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<pair<int, int>>>
+            pq;
+        vector<int> distance(n + 1, INT_MAX);
 
-        while(!q.empty()){
-            auto it = q.front();
-            q.pop();
+        distance[src] = 0;
+        pq.push({0, src});
 
-            int time = it.first;
-            int node = it.second.first;
-            int costnode = it.second.second;
+        while (!pq.empty()) {
+            int prev = pq.top().second;
+            int prevDist = pq.top().first;
+            pq.pop();
 
-            if(time > maxTime) continue;
-
-            for(auto it : adj[node]){
-                int adjnode = it.first;
-                int edtime = it.second;
-
-                if(time + edtime <= maxTime &&
-                   costnode + passingFees[adjnode] < cost[adjnode]){
-
-                    cost[adjnode] = costnode + passingFees[adjnode];
-
-                    q.push({time + edtime,
-                            {adjnode, cost[adjnode]}});
+            for (auto it : adj[prev]) {
+                int next = it.first;
+                int nextDist = it.second;
+                if (distance[next] > distance[prev] + nextDist) {
+                    distance[next] = distance[prev] + nextDist;
+                    pq.push({distance[next], next});
                 }
             }
         }
 
-        return cost[n-1] == 1e9 ? -1 : cost[n-1];
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (i != src && distance[i] <= distanceThreshold)
+                cnt++;
+        }
+
+        ans.push_back({cnt, src});
+    }
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        for (int i = 0; i < edges.size(); i++) {
+            int u = edges[i][0], v = edges[i][1], w = edges[i][2];
+            adj[u].push_back({v, w});
+            adj[v].push_back({u, w});
+        }
+
+        for (int i = 0; i < n; i++) {
+            dijkstra(i, n, distanceThreshold);
+        }
+
+        sort(ans.begin(), ans.end(), cmp);
+
+        return ans[0].second;
     }
 };
