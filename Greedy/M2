@@ -1,0 +1,23 @@
+https://leetcode.com/problems/jump-game/description/
+
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n=nums.size();
+        vector<int>dp(n,-1);//-1 unvisited,0-false,1-true
+        return memo(0,nums,dp);
+    }
+    bool memo(int ind,vector<int>&nums,vector<int>&dp){
+        if(ind>=nums.size()-1)return true;
+
+        if(dp[ind]!=-1)return false;
+
+        int maxJump=nums[ind];
+        for(int j=ind+1;j<=ind+maxJump && j<nums.size();j++){
+            if(memo(j,nums,dp)){
+                return dp[j]=1;
+            }
+        }
+        return dp[ind]=0;
+    }
+};
